@@ -146,7 +146,7 @@ resource DNSServerConfig 'Microsoft.Compute/virtualMachines/extensions@2022-08-0
     typeHandlerVersion: '2.83'
     autoUpgradeMinorVersion: true
     settings: {
-      ModulesUrl: 'https://adlabartifacts.blob.core.windows.net/windows-powershell-dsc/DNS.ps1.zip'
+      ModulesUrl: 'https://github.com/robertbeudeker/ADLab/raw/refs/heads/main/DSC/DNS.ps1.zip'
       ConfigurationFunction: 'DNS.ps1\\DNS'
       Properties: {
         DomainName: dnsSuffix
@@ -286,7 +286,7 @@ resource createADForest 'Microsoft.Compute/virtualMachines/extensions@2022-08-01
     typeHandlerVersion: '2.83'
     autoUpgradeMinorVersion: true
     settings: {
-      ModulesUrl: 'https://adlabartifacts.blob.core.windows.net/windows-powershell-dsc/CreateNewADForest.ps1.zip'
+      ModulesUrl: 'https://github.com/robertbeudeker/ADLab/raw/refs/heads/main/DSC/CreateNewADForest.ps1.zip'
       ConfigurationFunction: 'CreateNewADForest.ps1\\CreateNewADForest'
       Properties: {
         dnsSuffix: dnsSuffix
@@ -373,7 +373,7 @@ resource AddDC 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
     typeHandlerVersion: '2.83'
     autoUpgradeMinorVersion: true
     settings: {
-      ModulesUrl: 'https://adlabartifacts.blob.core.windows.net/windows-powershell-dsc/AddDomainController.ps1.zip'
+      ModulesUrl: 'https://github.com/robertbeudeker/ADLab/raw/refs/heads/main/DSC/AddDomainController.ps1.zip'
       ConfigurationFunction: 'AddDomainController.ps1\\AddDomainController'
       Properties: {
         dnsSuffix: dnsSuffix
@@ -461,7 +461,7 @@ resource AddChildDomain 'Microsoft.Compute/virtualMachines/extensions@2022-08-01
     typeHandlerVersion: '2.83'
     autoUpgradeMinorVersion: true
     settings: {
-      ModulesUrl: 'https://adlabartifacts.blob.core.windows.net/windows-powershell-dsc/AddDomain.ps1.zip'
+      ModulesUrl: 'https://github.com/robertbeudeker/ADLab/raw/refs/heads/main/DSC/AddDomain.ps1.zip'
       ConfigurationFunction: 'AddDomain.ps1\\AddDomain'
       Properties: {
         dnsSuffix: dnsSuffix
@@ -550,7 +550,7 @@ resource AddDCChildDomain 'Microsoft.Compute/virtualMachines/extensions@2022-08-
     typeHandlerVersion: '2.83'
     autoUpgradeMinorVersion: true
     settings: {
-      ModulesUrl: 'https://adlabartifacts.blob.core.windows.net/windows-powershell-dsc/AddDomainController.ps1.zip'
+      ModulesUrl: 'https://github.com/robertbeudeker/ADLab/raw/refs/heads/main/DSC/AddDomainController.ps1.zip'
       ConfigurationFunction: 'AddDomainController.ps1\\AddDomainController'
       Properties: {
         dnsSuffix: dnsSuffix
