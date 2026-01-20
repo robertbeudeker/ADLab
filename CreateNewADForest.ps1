@@ -17,17 +17,11 @@ param (
 
     Node localhost
     {
-        #LocalConfigurationManager
-        #{
+        LocalConfigurationManager
+        {
         #    ActionAfterReboot = 'ContinueConfiguration'
         #    ConfigurationMode = 'ApplyOnly'
-        #    RebootNodeIfNeeded = $true
-        #}
-
-        WindowsFeature RSAT
-        {
-            Ensure = "Present"
-            Name = "RSAT"
+            RebootNodeIfNeeded = $true
         }
 
         WindowsFeature ADDSInstall
@@ -35,19 +29,20 @@ param (
             Ensure = "Present"
             Name = "AD-Domain-Services"
         }
-        PendingReboot Reboot1 
-        { 
-            Name = "RebootServer" 
+        WindowsFeature RSAT
+        {
+            Ensure = "Present"
+            Name = "RSAT"
             DependsOn = "[WindowsFeature]ADDSInstall"
         }
         ADDomain Forest
         {
             DomainName                    = "$netbiosName.$dnsSuffix"
-            DomainNetbiosName             = $netbiosName
+            #DomainNetbiosName             = $netbiosName
             Credential                    = $Credential 
             SafeModeAdministratorPassword = $Credential
             ForestMode                    = 'WinThreshold'
-            DependsOn = "[PendingReboot]Reboot1"
+            DependsOn = "[WindowsFeature]ADDSInstall"
         }
 
         #Script CreateNewADForest
