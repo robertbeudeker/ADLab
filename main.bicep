@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 param adminUsername string = 'adlabadmin'
 @secure()
-param adminPassword string = 'lksjdfls$jfiIHHUHUH'
+param adminPassword string = newGuid()
 param dnsSuffix string = 'adlab.local'
 param netbiosName string = 'ads'
 param childNetbiosName string = 'intranet'
@@ -641,3 +641,6 @@ resource joinDomain 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = 
     }
   }
 }
+
+output adminusername string = adminUsername
+output adminpassword string = adminPassword
