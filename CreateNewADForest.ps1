@@ -41,7 +41,7 @@ param (
             DomainName                    = "$netbiosName.$dnsSuffix"
             DomainNetbiosName             = $netbiosName
             Credential                    = $Credential 
-            SafeModeAdministratorPassword = $Credential.Password
+            SafeModeAdministratorPassword = $Credential
             ForestMode                    = 'WinThreshold'
             DependsOn = "[WindowsFeature]ADDSInstall"
         }
