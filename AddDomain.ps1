@@ -23,7 +23,7 @@ param (
     {
         LocalConfigurationManager
         {
-            #ActionAfterReboot = 'ContinueConfiguration'
+            ActionAfterReboot = 'ContinueConfiguration'
             #ConfigurationMode = 'ApplyOnly'
             RebootNodeIfNeeded = $true
         }
@@ -41,11 +41,11 @@ param (
             DependsOn = "[WindowsFeature]ADDSInstall"
         }
 
-        #PendingReboot BeforeADInstall 
-        #{ 
-        #    Name = "BeforeADInstall" 
-        #    DependsOn = "[WindowsFeature]ADDSInstall"
-        #}
+        PendingReboot BeforeADInstall 
+        { 
+            Name = "BeforeADInstall" 
+            DependsOn = "[WindowsFeature]RSAT"
+        }
 
         ADDomain ChildDomain
         {
@@ -55,7 +55,7 @@ param (
             Credential                    = $ParentDomainCreds
             SafeModeAdministratorPassword = $Credential
             DomainType                    = 'TreeDomain'
-            DependsOn = "[WindowsFeature]ADDSInstall"
+            DependsOn = "[PendingReboot]BeforeADInstall"
         }
 
         PendingReboot Reboot1
