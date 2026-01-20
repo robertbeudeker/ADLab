@@ -12,7 +12,7 @@ param (
     $Credential
 )
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    #Import-DscResource -ModuleName ComputerManagementDsc -ModuleVersion "10.0.0"
+    Import-DscResource -ModuleName ComputerManagementDsc -ModuleVersion "10.0.0"
     Import-DscResource -ModuleName ActiveDirectoryDsc -ModuleVersion "6.7.1"
 
     Node localhost
@@ -35,7 +35,11 @@ param (
             Ensure = "Present"
             Name = "AD-Domain-Services"
         }
-
+        PendingReboot Reboot1 
+        { 
+            Name = "RebootServer" 
+            DependsOn = "[WindowsFeature]ADDSInstall"
+        }
         ADDomain Forest
         {
             DomainName                    = "$netbiosName.$dnsSuffix"
@@ -43,7 +47,7 @@ param (
             Credential                    = $Credential 
             SafeModeAdministratorPassword = $Credential
             ForestMode                    = 'WinThreshold'
-            DependsOn = "[WindowsFeature]ADDSInstall"
+            DependsOn = "[PendingReboot]Reboot1"
         }
 
         #Script CreateNewADForest
