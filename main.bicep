@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 param adminUsername string = 'adlabadmin'
 @secure()
-param adminPassword string
+param adminPassword string = 'lksjdfls$jfiIHHUHUH'
 param dnsSuffix string = 'adlab.local'
 param netbiosName string = 'ads'
 param childNetbiosName string = 'intranet'
