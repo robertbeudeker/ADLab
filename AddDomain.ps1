@@ -58,11 +58,11 @@ param (
             DependsOn = "[WindowsFeature]ADDSInstall"
         }
 
-        #PendingReboot Reboot2 
-        #{ 
-        #    Name = "RebootServer" 
-        #    DependsOn = "[ADDomain]ChildDomain"
-        #}
+        PendingReboot Reboot1
+        { 
+            Name = "RebootServer" 
+            DependsOn = "[ADDomain]ChildDomain"
+        }
 
 
         #Script ADDomainToForest

@@ -44,6 +44,11 @@ param (
             ForestMode                    = 'WinThreshold'
             DependsOn = "[WindowsFeature]ADDSInstall"
         }
+        PendingReboot Reboot1 
+        { 
+            Name = "RebootServer" 
+            DependsOn = "[ADDomain]Forest"
+        }
 
         #Script CreateNewADForest
         #{
