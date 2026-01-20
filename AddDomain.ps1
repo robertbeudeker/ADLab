@@ -23,21 +23,22 @@ param (
     {
         LocalConfigurationManager
         {
-            ActionAfterReboot = 'ContinueConfiguration'
-            ConfigurationMode = 'ApplyOnly'
+            #ActionAfterReboot = 'ContinueConfiguration'
+            #ConfigurationMode = 'ApplyOnly'
             RebootNodeIfNeeded = $true
-        }
-
-        WindowsFeature RSAT
-        {
-            Ensure = "Present"
-            Name = "RSAT"
         }
 
         WindowsFeature ADDSInstall
         {
             Ensure = "Present"
             Name = "AD-Domain-Services"
+        }
+
+        WindowsFeature RSAT
+        {
+            Ensure = "Present"
+            Name = "RSAT"
+            DependsOn = "[WindowsFeature]ADDSInstall"
         }
 
         #PendingReboot BeforeADInstall 
@@ -57,11 +58,11 @@ param (
             DependsOn = "[WindowsFeature]ADDSInstall"
         }
 
-        PendingReboot Reboot2 
-        { 
-            Name = "RebootServer" 
-            DependsOn = "[ADDomain]ChildDomain"
-        }
+        #PendingReboot Reboot2 
+        #{ 
+        #    Name = "RebootServer" 
+        #    DependsOn = "[ADDomain]ChildDomain"
+        #}
 
 
         #Script ADDomainToForest
