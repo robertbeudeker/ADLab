@@ -36,17 +36,29 @@ param (
             Name = "AD-Domain-Services"
         }
 
-        PendingReboot Reboot1 
-        { 
-            Name = "Reboot1" 
+        Script Reboot
+        {
+            TestScript = {
+            return (Test-Path HKLM:\SOFTWARE\MyMainKey\RebootKey)
+            }
+            SetScript = {
+                    New-Item -Path HKLM:\SOFTWARE\MyMainKey\RebootKey -Force
+                    $global:DSCMachineStatus = 1 
+                }
+            GetScript = { return @{result = 'result'}}
             DependsOn = "[WindowsFeature]ADDSInstall"
+        }
+        PendingReboot AfterADInstall
+        {
+            Name      = 'AfterADInstall'
+            DependsOn = '[Script]Reboot'
         }
 
         WaitForADDomain DscForestWait
         {
             DomainName = "$NetbiosName.$dnsSuffix"
             Credential = $DomainCreds
-            DependsOn = "[PendingReboot]Reboot1"
+            DependsOn = "[PendingReboot]AfterADInstall"
             RestartCount = 5
         }
     }
