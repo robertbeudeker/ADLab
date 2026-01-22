@@ -7,3 +7,6 @@ The Active Directory structure consists of a Root Forest with a Tree domain as t
 DNS is hosted on a separate server and is not part of the Active Directory domain. In many large organizations, an alternative DNS product is used instead of Active Directory–integrated DNS.
 
 The purpose of this repository is to quickly build an Active Directory lab environment. This lab can then be used, for example, for forest recovery testing, optionally in combination with Entra ID Connect.
+
+Deployment of Active Directory and Domain Controller promotion is performed using PowerShell Desired State Configuration (DSC) modules and Azure Run Command scripts. Unfortunately, the existing PowerShell DSC module ActiveDirectoryDSC does not support this specific scenario. For example, a new forest cannot be created without installing the DNS role on the Domain Controller, and creating a new tree domain in an existing forest results in an error.
+To resolve this, a customized version of ActiveDirectoryDSC, modified by me, is bundled with the DSC scripts. The creation of the tree domain is performed using an Azure Run Command PowerShell script instead of the ActiveDirectoryDSC module.
