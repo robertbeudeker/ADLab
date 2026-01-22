@@ -41,6 +41,10 @@ var computers = {
   }
 }
 
+var vnetPrefixes= ['10.10.0.0/16']
+var ADsubnet = '10.10.10.0/24'
+var bastionSubnet = '10.10.224.0/24'
+
 module nsgAD 'br/public:avm/res/network/network-security-group:0.5.2' = {
   name: 'ad-subnet-nsg-deployment'
   params: {
@@ -49,14 +53,12 @@ module nsgAD 'br/public:avm/res/network/network-security-group:0.5.2' = {
 }
 
 var networks = {
-  addressPrefixes : [
-      '10.10.0.0/16'
-      ]
+  addressPrefixes : vnetPrefixes
   subnets : [
       {
         name: 'AD'
         properties: {
-          addressPrefix: '10.10.67.0/24'
+          addressPrefix: ADsubnet
           networkSecurityGroup: {
             id: nsgAD.outputs.resourceId
           } 
@@ -65,7 +67,7 @@ var networks = {
       {
         name: 'AzureBastionSubnet'
         properties: {
-          addressPrefix: '10.10.224.0/24'  
+          addressPrefix: bastionSubnet
         }
     }
   ]
@@ -82,7 +84,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2025-01-01' = {
   }
 }
 
-resource ADsubnet 'Microsoft.Network/virtualNetworks/subnets@2025-01-01' existing = {
+resource ADsubnetObj 'Microsoft.Network/virtualNetworks/subnets@2025-01-01' existing = {
   name: 'AD'
   parent: vnet
 }
@@ -106,7 +108,7 @@ module dnsServer 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
-            subnetResourceId: ADsubnet.id
+            subnetResourceId: ADsubnetObj.id
             privateIPAllocationMethod: 'Static'
             privateIPAddress: computers.DNS.ip
           }
@@ -242,7 +244,7 @@ module ADServer1 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
-            subnetResourceId: ADsubnet.id
+            subnetResourceId: ADsubnetObj.id
             privateIPAllocationMethod: 'Static'
             privateIPAddress: computers.DC1.ip
           }
@@ -326,7 +328,7 @@ module ADServer2 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
-            subnetResourceId: ADsubnet.id
+            subnetResourceId: ADsubnetObj.id
             privateIPAllocationMethod: 'Static'
             privateIPAddress: computers.DC2.ip
           }
@@ -413,7 +415,7 @@ module ADServer3 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
-            subnetResourceId: ADsubnet.id
+            subnetResourceId: ADsubnetObj.id
             privateIPAllocationMethod: 'Static'
             privateIPAddress: computers.DC3.ip
           }
@@ -566,7 +568,7 @@ module ADServer4 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
-            subnetResourceId: ADsubnet.id
+            subnetResourceId: ADsubnetObj.id
             privateIPAllocationMethod: 'Static'
             privateIPAddress: computers.DC4.ip
           }
@@ -654,7 +656,7 @@ module MemberServer1 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
-            subnetResourceId: ADsubnet.id
+            subnetResourceId: ADsubnetObj.id
             privateIPAllocationMethod: 'Static'
             privateIPAddress: computers.MB1.ip
           }

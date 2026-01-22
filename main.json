@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "3437422220386645800"
+      "templateHash": "11354573192346454517"
     }
   },
   "parameters": {
@@ -79,7 +79,12 @@
         "name": "SR06",
         "ip": "10.10.10.16"
       }
-    }
+    },
+    "vnetPrefixes": [
+      "10.10.0.0/16"
+    ],
+    "ADsubnet": "10.10.10.0/24",
+    "bastionSubnet": "10.10.224.0/24"
   },
   "resources": {
     "vnet": {
@@ -89,15 +94,15 @@
       "location": "[parameters('location')]",
       "properties": {
         "addressSpace": {
-          "addressPrefixes": "[createObject('addressPrefixes', createArray('10.10.0.0/16'), 'subnets', createArray(createObject('name', 'AD', 'properties', createObject('addressPrefix', '10.10.67.0/24', 'networkSecurityGroup', createObject('id', reference('nsgAD').outputs.resourceId.value))), createObject('name', 'AzureBastionSubnet', 'properties', createObject('addressPrefix', '10.10.224.0/24')))).addressPrefixes]"
+          "addressPrefixes": "[createObject('addressPrefixes', variables('vnetPrefixes'), 'subnets', createArray(createObject('name', 'AD', 'properties', createObject('addressPrefix', variables('ADsubnet'), 'networkSecurityGroup', createObject('id', reference('nsgAD').outputs.resourceId.value))), createObject('name', 'AzureBastionSubnet', 'properties', createObject('addressPrefix', variables('bastionSubnet'))))).addressPrefixes]"
         },
-        "subnets": "[createObject('addressPrefixes', createArray('10.10.0.0/16'), 'subnets', createArray(createObject('name', 'AD', 'properties', createObject('addressPrefix', '10.10.67.0/24', 'networkSecurityGroup', createObject('id', reference('nsgAD').outputs.resourceId.value))), createObject('name', 'AzureBastionSubnet', 'properties', createObject('addressPrefix', '10.10.224.0/24')))).subnets]"
+        "subnets": "[createObject('addressPrefixes', variables('vnetPrefixes'), 'subnets', createArray(createObject('name', 'AD', 'properties', createObject('addressPrefix', variables('ADsubnet'), 'networkSecurityGroup', createObject('id', reference('nsgAD').outputs.resourceId.value))), createObject('name', 'AzureBastionSubnet', 'properties', createObject('addressPrefix', variables('bastionSubnet'))))).subnets]"
       },
       "dependsOn": [
         "nsgAD"
       ]
     },
-    "ADsubnet": {
+    "ADsubnetObj": {
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks/subnets",
       "apiVersion": "2025-01-01",
@@ -11909,7 +11914,7 @@
             ]
           },
           "addressPrefixes": {
-            "value": "[createObject('addressPrefixes', createArray('10.10.0.0/16'), 'subnets', createArray(createObject('name', 'AD', 'properties', createObject('addressPrefix', '10.10.67.0/24', 'networkSecurityGroup', createObject('id', reference('nsgAD').outputs.resourceId.value))), createObject('name', 'AzureBastionSubnet', 'properties', createObject('addressPrefix', '10.10.224.0/24')))).addressPrefixes]"
+            "value": "[createObject('addressPrefixes', variables('vnetPrefixes'), 'subnets', createArray(createObject('name', 'AD', 'properties', createObject('addressPrefix', variables('ADsubnet'), 'networkSecurityGroup', createObject('id', reference('nsgAD').outputs.resourceId.value))), createObject('name', 'AzureBastionSubnet', 'properties', createObject('addressPrefix', variables('bastionSubnet'))))).addressPrefixes]"
           },
           "vnetName": {
             "value": "[parameters('vnetName')]"
