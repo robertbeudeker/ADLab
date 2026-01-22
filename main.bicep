@@ -17,27 +17,27 @@ param vnetName string
 var computers = {
   DNS: {
     name: 'SR01'
-    ip: '10.10.67.10'
+    ip: '10.10.10.10'
   }
   DC1 : {
     name: 'SR02'
-    ip: '10.10.67.12'
+    ip: '10.10.10.12'
   }
   DC2 : {
     name: 'SR03'
-    ip: '10.10.67.13'
+    ip: '10.10.10.13'
   }
   DC3 : {
     name: 'SR04'
-    ip: '10.10.67.14'
+    ip: '10.10.10.14'
   }
   DC4 : {
     name: 'SR05'
-    ip: '10.10.67.15'
+    ip: '10.10.10.15'
   }
   MB1: {
     name: 'SR06'
-    ip: '10.10.67.16'
+    ip: '10.10.10.16'
   }
 }
 
@@ -121,7 +121,7 @@ module dnsServer 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_B2ms'
+    vmSize: 'Standard_B1s'
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
