@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "11094657359459036400"
+      "templateHash": "6672251431816380601"
     }
   },
   "parameters": {
@@ -2832,7 +2832,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "Standard_B1s"
+            "value": "Standard_B1ms"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"

@@ -123,7 +123,7 @@ module dnsServer 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_B1s'
+    vmSize: 'Standard_B1ms'
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
