@@ -529,7 +529,7 @@ resource CreateTreeDomain 'Microsoft.Compute/virtualMachines/runCommands@2025-04
           -Force:$true
         '''
     }
-        parameters: [
+    parameters: [
       {
         name: 'dnsSuffix'
         value: dnsSuffix
@@ -546,6 +546,8 @@ resource CreateTreeDomain 'Microsoft.Compute/virtualMachines/runCommands@2025-04
         name: 'adminuser'
         value: adminUsername
       }
+    ]
+    protectedParameters: [
       {
         name: 'adminpassword'
         value: adminPassword

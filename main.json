@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "11354573192346454517"
+      "templateHash": "11094657359459036400"
     }
   },
   "parameters": {
@@ -336,7 +336,9 @@
           {
             "name": "adminuser",
             "value": "[parameters('adminUsername')]"
-          },
+          }
+        ],
+        "protectedParameters": [
           {
             "name": "adminpassword",
             "value": "[parameters('adminPassword')]"
