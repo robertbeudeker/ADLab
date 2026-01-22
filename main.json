@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5691040383285472154"
+      "templateHash": "5802301248306146104"
     }
   },
   "parameters": {
@@ -12021,7 +12021,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "vmSize"
+            "value": "[variables('vmSize')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -21143,7 +21143,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "vmSize"
+            "value": "[variables('vmSize')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -30265,7 +30265,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "vmSize"
+            "value": "[variables('vmSize')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -39388,7 +39388,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "vmSize"
+            "value": "[variables('vmSize')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -48511,7 +48511,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "vmSize"
+            "value": "[variables('vmSize')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"

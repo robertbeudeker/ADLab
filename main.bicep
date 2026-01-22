@@ -259,7 +259,7 @@ module ADServer1 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'vmSize'
+    vmSize: vmSize
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
@@ -343,7 +343,7 @@ module ADServer2 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'vmSize'
+    vmSize: vmSize
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
@@ -430,7 +430,7 @@ module ADServer3 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'vmSize'
+    vmSize: vmSize
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
@@ -585,7 +585,7 @@ module ADServer4 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'vmSize'
+    vmSize: vmSize
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
@@ -673,7 +673,7 @@ module MemberServer1 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'vmSize'
+    vmSize: vmSize
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
