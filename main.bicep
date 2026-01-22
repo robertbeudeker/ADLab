@@ -1,12 +1,19 @@
 param location string = resourceGroup().location
+@description('Administrator username used for the default domain administrator and member servers')
 param adminUsername string = 'adlabadmin'
+@description('Password to be used voor default domain administrator and member servers local admin password')
 @secure()
-param adminPassword string = newGuid()
+param adminPassword string
+@description('FQDN suffix for the domain, for example adlab.local')
 param dnsSuffix string = 'adlab.local'
-param netbiosName string = 'ads'
-param childNetbiosName string = 'intranet'
-param vnetName string = 'adlab-vnet'
+@description('Active Directory Forest Netbios name')
+param netbiosName string
+@description('Active Directory TreeDomain Netbios name')
+param childNetbiosName string
+@description('Azure virtual network name, for example adlab-vnet')
+param vnetName string
 
+@description('definition for all servers.')
 var computers = {
   DNS: {
     name: 'SR01'
@@ -14,23 +21,23 @@ var computers = {
   }
   DC1 : {
     name: 'SR02'
-    ip: '10.10.67.11'
+    ip: '10.10.67.12'
   }
   DC2 : {
     name: 'SR03'
-    ip: '10.10.67.12'
+    ip: '10.10.67.13'
   }
   DC3 : {
     name: 'SR04'
-    ip: '10.10.67.13'
+    ip: '10.10.67.14'
   }
   DC4 : {
     name: 'SR05'
-    ip: '10.10.67.14'
+    ip: '10.10.67.15'
   }
   MB1: {
     name: 'SR06'
-    ip: '10.10.67.15'
+    ip: '10.10.67.16'
   }
 }
 
@@ -450,9 +457,9 @@ resource ADServer3Obj 'Microsoft.Compute/virtualMachines@2025-04-01' existing = 
 
 resource AddChildDomain 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
   parent: ADServer3Obj
-  name: 'AddDomainToForest'
+  name: 'InstallADWait'
   dependsOn: [
-    createADForest
+    ADServer3Obj
   ]
   location: location
   properties: {
@@ -461,12 +468,11 @@ resource AddChildDomain 'Microsoft.Compute/virtualMachines/extensions@2022-08-01
     typeHandlerVersion: '2.83'
     autoUpgradeMinorVersion: true
     settings: {
-      ModulesUrl: 'https://github.com/robertbeudeker/ADLab/raw/refs/heads/main/DSC/AddDomain.ps1.zip'
-      ConfigurationFunction: 'AddDomain.ps1\\AddDomain'
+      ModulesUrl: 'https://github.com/robertbeudeker/ADLab/raw/refs/heads/main/DSC/installADWait.ps1.zip'
+      ConfigurationFunction: 'InstallADWait.ps1\\InstallADWait'
       Properties: {
         dnsSuffix: dnsSuffix
-        netbiosName : childNetbiosName
-        netbiosNameParent: netbiosName
+        netbiosName : netbiosName
         Credential: {
           UserName: adminUsername
           Password: 'PrivateSettingsRef:AdminPassword'
@@ -478,6 +484,71 @@ resource AddChildDomain 'Microsoft.Compute/virtualMachines/extensions@2022-08-01
         AdminPassword: adminPassword
       }
     }
+  }
+}
+
+resource CreateTreeDomain 'Microsoft.Compute/virtualMachines/runCommands@2025-04-01' = {
+  name: 'CreateTreeDomain'
+  dependsOn: [AddChildDomain]
+  parent: ADServer3Obj
+  location: location
+  properties: {
+    source: {
+      script: '''
+        param (
+          [Parameter(Mandatory = $true)]
+          [string]$dnsSuffix,
+          [Parameter(Mandatory = $true)]
+          [string]$netbiosName,
+          [Parameter(Mandatory = $true)]
+          [String]$netbiosNameParent,
+          [Parameter(Mandatory = $true)]
+          [String]$adminuser,
+          [Parameter(Mandatory = $true)]
+          [String]$adminpassword
+        )
+        $secAdminpassword = ConvertTo-SecureString $adminpassword -AsPlainText -Force
+        $user = "$adminuser@$netbiosNameParent.$dnsSuffix"
+        write-host $user
+        $cred = New-Object System.Management.Automation.PSCredential ($user, $secAdminpassword)
+        Import-Module ADDSDeployment
+        Install-ADDSDomain `
+          -NewDomainName "$netbiosName.$dnsSuffix" `
+          -ParentDomainName "$netbiosNameParent.$dnsSuffix" `
+          -Credential $cred `
+          -SafeModeAdministratorPassword $secAdminpassword `
+          -DomainType TreeDomain `
+          -InstallDns:$false `
+          -CreateDnsDelegation:$false `
+          -DatabasePath "C:\Windows\NTDS" `
+          -LogPath "C:\Windows\NTDS" `
+          -SysvolPath "C:\Windows\SYSVOL" `
+          -NoRebootOnCompletion:$false `
+          -Force:$true
+        '''
+    }
+        parameters: [
+      {
+        name: 'dnsSuffix'
+        value: dnsSuffix
+      }
+      {
+        name: 'netbiosName'
+        value: childNetbiosName
+      }
+      {
+        name: 'netbiosNameParent'
+        value: netbiosName
+      }
+      {
+        name: 'adminuser'
+        value: adminUsername
+      }
+      {
+        name: 'adminpassword'
+        value: adminPassword
+      }
+    ]
   }
 }
 
@@ -541,7 +612,7 @@ resource AddDCChildDomain 'Microsoft.Compute/virtualMachines/extensions@2022-08-
   parent: ADServer4Obj
   name: 'AddSecondDCToFChildDomain'
   dependsOn: [
-    AddChildDomain
+    CreateTreeDomain
   ]
   location: location
   properties: {
@@ -571,7 +642,7 @@ resource AddDCChildDomain 'Microsoft.Compute/virtualMachines/extensions@2022-08-
 
 module MemberServer1 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
   name: '${computers.MB1.name}-deployment'
-  dependsOn: [AddChildDomain]
+  dependsOn: [CreateTreeDomain]
   params: {
     name: computers.MB1.name
     availabilityZone: -1
