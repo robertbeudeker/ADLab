@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "6672251431816380601"
+      "templateHash": "5691040383285472154"
     }
   },
   "parameters": {
@@ -80,6 +80,7 @@
         "ip": "10.10.10.16"
       }
     },
+    "vmSize": "Standard_B2ms",
     "vnetPrefixes": [
       "10.10.0.0/16"
     ],
@@ -2832,7 +2833,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "Standard_B1ms"
+            "value": "[variables('vmSize')]"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -12020,7 +12021,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "Standard_B2ms"
+            "value": "vmSize"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -21142,7 +21143,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "Standard_B2ms"
+            "value": "vmSize"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -30264,7 +30265,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "Standard_B2ms"
+            "value": "vmSize"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -39387,7 +39388,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "Standard_B2ms"
+            "value": "vmSize"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"
@@ -48510,7 +48511,7 @@
             "value": "Windows"
           },
           "vmSize": {
-            "value": "Standard_B2ms"
+            "value": "vmSize"
           },
           "adminUsername": {
             "value": "[parameters('adminUsername')]"

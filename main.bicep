@@ -40,7 +40,7 @@ var computers = {
     ip: '10.10.10.16'
   }
 }
-
+var vmSize = 'Standard_B2ms'
 var vnetPrefixes= ['10.10.0.0/16']
 var ADsubnet = '10.10.10.0/24'
 var bastionSubnet = '10.10.224.0/24'
@@ -123,7 +123,7 @@ module dnsServer 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_B1ms'
+    vmSize: vmSize
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
@@ -259,7 +259,7 @@ module ADServer1 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_B2ms'
+    vmSize: 'vmSize'
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
@@ -343,7 +343,7 @@ module ADServer2 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_B2ms'
+    vmSize: 'vmSize'
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
@@ -430,7 +430,7 @@ module ADServer3 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_B2ms'
+    vmSize: 'vmSize'
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
@@ -585,7 +585,7 @@ module ADServer4 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_B2ms'
+    vmSize: 'vmSize'
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
@@ -673,7 +673,7 @@ module MemberServer1 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_B2ms'
+    vmSize: 'vmSize'
     adminUsername: adminUsername
     adminPassword: adminPassword
     imageReference: {
