@@ -489,70 +489,25 @@ resource AddChildDomain 'Microsoft.Compute/virtualMachines/extensions@2022-08-01
   }
 }
 
-resource CreateTreeDomain 'Microsoft.Compute/virtualMachines/runCommands@2025-04-01' = {
+resource CreateTreeDomain 'Microsoft.Compute/virtualMachines/extensions@2025-04-01' = {
   name: 'CreateTreeDomain'
-  dependsOn: [AddChildDomain]
+  dependsOn: [
+    AddChildDomain
+  ]
   parent: ADServer3Obj
   location: location
   properties: {
-    source: {
-      script: '''
-        param (
-          [Parameter(Mandatory = $true)]
-          [string]$dnsSuffix,
-          [Parameter(Mandatory = $true)]
-          [string]$netbiosName,
-          [Parameter(Mandatory = $true)]
-          [String]$netbiosNameParent,
-          [Parameter(Mandatory = $true)]
-          [String]$adminuser,
-          [Parameter(Mandatory = $true)]
-          [String]$adminpassword
-        )
-        $secAdminpassword = ConvertTo-SecureString $adminpassword -AsPlainText -Force
-        $user = "$adminuser@$netbiosNameParent.$dnsSuffix"
-        write-host $user
-        $cred = New-Object System.Management.Automation.PSCredential ($user, $secAdminpassword)
-        Import-Module ADDSDeployment
-        Install-ADDSDomain `
-          -NewDomainName "$netbiosName.$dnsSuffix" `
-          -ParentDomainName "$netbiosNameParent.$dnsSuffix" `
-          -Credential $cred `
-          -SafeModeAdministratorPassword $secAdminpassword `
-          -DomainType TreeDomain `
-          -InstallDns:$false `
-          -CreateDnsDelegation:$false `
-          -DatabasePath "C:\Windows\NTDS" `
-          -LogPath "C:\Windows\NTDS" `
-          -SysvolPath "C:\Windows\SYSVOL" `
-          -NoRebootOnCompletion:$false `
-          -Force:$true
-        '''
+    publisher: 'Microsoft.Compute'
+    type: 'CustomScriptExtension'
+    typeHandlerVersion: '1.10'
+    settings: {
+      fileUris : [
+        'https://github.com/robertbeudeker/ADLab/raw/refs/heads/main/AddDomainTree.ps1'
+      ]
     }
-    parameters: [
-      {
-        name: 'dnsSuffix'
-        value: dnsSuffix
-      }
-      {
-        name: 'netbiosName'
-        value: childNetbiosName
-      }
-      {
-        name: 'netbiosNameParent'
-        value: netbiosName
-      }
-      {
-        name: 'adminuser'
-        value: adminUsername
-      }
-    ]
-    protectedParameters: [
-      {
-        name: 'adminpassword'
-        value: adminPassword
-      }
-    ]
+    protectedSettings: {
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File AddDomainTree.ps1 -dnsSuffix "${dnsSuffix}" -netbiosName "${childNetbiosName}" -netbiosNameParent "${netbiosName}" -adminuser "${adminUsername}" -adminpassword "${adminPassword}"'
+    }
   }
 }
 
@@ -646,7 +601,7 @@ resource AddDCChildDomain 'Microsoft.Compute/virtualMachines/extensions@2022-08-
 
 module MemberServer1 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
   name: '${computers.MB1.name}-deployment'
-  dependsOn: [CreateTreeDomain]
+  dependsOn: [AddDCChildDomain]
   params: {
     name: computers.MB1.name
     availabilityZone: -1

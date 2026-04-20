@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "13956582713714086843"
+      "templateHash": "3006290785042457363"
     }
   },
   "parameters": {
@@ -313,38 +313,22 @@
       ]
     },
     "CreateTreeDomain": {
-      "type": "Microsoft.Compute/virtualMachines/runCommands",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}/{1}', variables('computers').DC3.name, 'CreateTreeDomain')]",
       "location": "[parameters('location')]",
       "properties": {
-        "source": {
-          "script": "        param (\r\n          [Parameter(Mandatory = $true)]\r\n          [string]$dnsSuffix,\r\n          [Parameter(Mandatory = $true)]\r\n          [string]$netbiosName,\r\n          [Parameter(Mandatory = $true)]\r\n          [String]$netbiosNameParent,\r\n          [Parameter(Mandatory = $true)]\r\n          [String]$adminuser,\r\n          [Parameter(Mandatory = $true)]\r\n          [String]$adminpassword\r\n        )\r\n        $secAdminpassword = ConvertTo-SecureString $adminpassword -AsPlainText -Force\r\n        $user = \"$adminuser@$netbiosNameParent.$dnsSuffix\"\r\n        write-host $user\r\n        $cred = New-Object System.Management.Automation.PSCredential ($user, $secAdminpassword)\r\n        Import-Module ADDSDeployment\r\n        Install-ADDSDomain `\r\n          -NewDomainName \"$netbiosName.$dnsSuffix\" `\r\n          -ParentDomainName \"$netbiosNameParent.$dnsSuffix\" `\r\n          -Credential $cred `\r\n          -SafeModeAdministratorPassword $secAdminpassword `\r\n          -DomainType TreeDomain `\r\n          -InstallDns:$false `\r\n          -CreateDnsDelegation:$false `\r\n          -DatabasePath \"C:\\Windows\\NTDS\" `\r\n          -LogPath \"C:\\Windows\\NTDS\" `\r\n          -SysvolPath \"C:\\Windows\\SYSVOL\" `\r\n          -NoRebootOnCompletion:$false `\r\n          -Force:$true\r\n        "
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.10",
+        "settings": {
+          "fileUris": [
+            "https://github.com/robertbeudeker/ADLab/raw/refs/heads/main/AddDomainTree.ps1"
+          ]
         },
-        "parameters": [
-          {
-            "name": "dnsSuffix",
-            "value": "[parameters('dnsSuffix')]"
-          },
-          {
-            "name": "netbiosName",
-            "value": "[parameters('childNetbiosName')]"
-          },
-          {
-            "name": "netbiosNameParent",
-            "value": "[parameters('netbiosName')]"
-          },
-          {
-            "name": "adminuser",
-            "value": "[parameters('adminUsername')]"
-          }
-        ],
-        "protectedParameters": [
-          {
-            "name": "adminpassword",
-            "value": "[parameters('adminPassword')]"
-          }
-        ]
+        "protectedSettings": {
+          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File AddDomainTree.ps1 -dnsSuffix \"{0}\" -netbiosName \"{1}\" -netbiosNameParent \"{2}\" -adminuser \"{3}\" -adminpassword \"{4}\"', parameters('dnsSuffix'), parameters('childNetbiosName'), parameters('netbiosName'), parameters('adminUsername'), parameters('adminPassword'))]"
+        }
       },
       "dependsOn": [
         "AddChildDomain",
@@ -57581,7 +57565,7 @@
         }
       },
       "dependsOn": [
-        "CreateTreeDomain",
+        "AddDCChildDomain",
         "vnet"
       ]
     }
