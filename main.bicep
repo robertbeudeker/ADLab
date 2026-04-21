@@ -40,7 +40,7 @@ var computers = {
     ip: '10.10.10.16'
   }
 }
-var vmSize = 'Standard_B2ms'
+var vmSize = 'Standard_D2as_v5'
 var vnetPrefixes= ['10.10.0.0/16']
 var ADsubnet = '10.10.10.0/24'
 var bastionSubnet = '10.10.224.0/24'
